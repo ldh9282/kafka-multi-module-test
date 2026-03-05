@@ -1,0 +1,9 @@
+// module 이라서
+//rootProject.name = 'products'
+
+// 1. 모듈 이름 선언
+//include 'common'
+
+// 2. 'common' 모듈의 실제 물리적 위치 알려주기
+// (현재 products 폴더에서 한 칸 위로 나가서 common 폴더로 들어가는 경로)
+//project(':common').projectDir = new File(settingsDir.parent, 'common')
