@@ -1,0 +1,11 @@
+// 전체 빌드
+// ./gradlew build
+// 개별 빌드
+// ./gradlew :products:build
+// 개별 실행 (빌드와 동시에 실행)
+// ./gradlew :products:bootRun
+// 전체 실행은 Docker Compose
+rootProject.name = 'product-service'
+
+include 'common'
+include 'products'
