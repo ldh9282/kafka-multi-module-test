@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: products
+  kafka:
+    producer:
+      # kafka bootstrap server
+      bootstrap-servers: localhost:9092,localhost:9094
+      # kafka topic
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # kafka topic
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+server:
+  # random port
+  port: 0
