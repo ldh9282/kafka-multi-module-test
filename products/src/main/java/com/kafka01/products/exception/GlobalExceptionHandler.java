@@ -1,5 +1,6 @@
 package com.kafka01.products.exception;
 
+import com.kafka01.common.exception.BaseException;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
@@ -46,11 +47,16 @@ public class GlobalExceptionHandler {
         return BaseResponse.error(HttpStatus.BAD_REQUEST, msg);
     }
 
+    @ExceptionHandler({BaseException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public <T> BaseResponse<T> handleBaseException(BaseException exception) {
+        log.error("Internal Server Error", exception);
+        return BaseResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
+    }
     @ExceptionHandler({Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public <T> BaseResponse<T> handleException(Exception exception) {
-        log.error("Internal Server Error", exception);
-        return BaseResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
+        return handleBaseException(new BaseException(exception));
     }
 
 }

@@ -9,6 +9,23 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       # kafka topic
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      # 리더 브로커와 팔로워 브로커 모두 (In Sync Replica) 저장할때까지 기다림
+      acks: all
+      # 재시도 최대횟수(기본 값은 2147483647)
+#      retries: 10
+      properties:
+        # 재시도 하기전 대기하는 시간(ms)
+#        retry.backoff.ms: 1000
+        # 전체 타임아웃 시간(재시도 합쳐서)
+        delivery.timeout.ms: 120000
+        # 메시지를 배치로 묶는 시간(기본값은 0ms). 이 값이 0이라는 것은 프로듀서가 메시지를 받는 즉시 브로커로 전송한다는 의미
+        linger.ms: 0
+        # 개별 요청 타임아웃 시간. 기본값 (30초). 처음부터 브로커가 꺼져있는 상태에서 전송하는 경우는 request.timeout.ms 와 무관하게 재시도
+        request.timeout.ms: 3000
+
+
+
+
 
 server:
   # random port
