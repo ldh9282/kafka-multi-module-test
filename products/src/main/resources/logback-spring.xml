@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="app"/>
-    <property name="LOG_DIR" value="${LOG_DIR:-/var/log/app}"/>
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="default-app"/>
+    <springProperty scope="context" name="PROFILE" source="spring.profiles.active" defaultValue="default"/>
+
+    <property name="LOG_DIR" value="${LOG_DIR:-/var/log}/${APP_NAME}/${PROFILE}"/>
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] [%X{logId}] [%logger{0}.%method:%line]: %msg%n"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -26,6 +28,6 @@
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-<!--        <appender-ref ref="FILE"/>-->
+        <!--        <appender-ref ref="FILE"/>-->
     </root>
 </configuration>
