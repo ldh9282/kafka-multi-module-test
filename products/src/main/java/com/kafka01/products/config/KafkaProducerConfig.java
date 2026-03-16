@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaConfig {
+public class KafkaProducerConfig {
 
     @Value("${spring.kafka.producer.bootstrap-servers}")
     private String bootStrapServer;
@@ -38,6 +38,12 @@ public class KafkaConfig {
     @Value("${spring.kafka.producer.properties.request.timeout.ms}")
     private String requestTimeout;
 
+    @Value("${spring.kafka.producer.properties.enable.idempotence}")
+    private String idempotence;
+
+    @Value("${spring.kafka.producer.properties.max.in.flight.requests.per.connection}")
+    private Integer inflightRequests;
+
     public Map<String, Object> productConfigs() {
         Map<String, Object> configs = new HashMap<>();
 
@@ -48,6 +54,9 @@ public class KafkaConfig {
         configs.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, deliveryTimeout);
         configs.put(ProducerConfig.LINGER_MS_CONFIG, linger);
         configs.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeout);
+        configs.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, idempotence);
+        configs.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, inflightRequests);
+        configs.put(ProducerConfig.RETRIES_CONFIG, inflightRequests);
 
         return configs;
     }
@@ -82,7 +91,7 @@ public class KafkaConfig {
                 .build();
     }
 
-    public KafkaConfig() {
+    public KafkaProducerConfig() {
 
     }
 

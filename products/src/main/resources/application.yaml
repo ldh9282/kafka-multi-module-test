@@ -39,7 +39,7 @@ spring:
             flight:
               requests:
                 per:
-                  # 한 번에 보낼 수 있는 요청 수
+                  # 한 번에 보낼 수 있는 요청 수 <= 5 이어야 프로듀서 멱등성 true 로 적용됨. 아니면 에러
                   connection: 5
 
 
