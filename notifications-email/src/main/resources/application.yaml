@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: notifications-email
+  kafka:
+    consumer:
+      # kafka bootstrap server
+      bootstrap-servers: localhost:9092,localhost:9094
+      # topic key deserializer
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # topic value deserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      # default group id for consumer
+      group-id: product-created-events
+      properties:
+        # json deserializer trusted packages
+        spring.json.trusted.packages: "com.kafka01.common.event"
+server:
+  # random port
+  port: 0

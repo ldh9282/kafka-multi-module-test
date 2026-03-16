@@ -9,3 +9,4 @@ rootProject.name = 'product-service'
 
 include 'common'
 include 'products'
+include 'notifications-email'
