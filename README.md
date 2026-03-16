@@ -1,17 +1,18 @@
 ﻿# Product Service
 
-`product-service`는 Spring Boot 기반의 상품 이벤트 발행 서비스입니다.
-`POST /api/products` 요청을 받아 Kafka 토픽으로 상품 생성 이벤트를 비동기로 전송합니다.
+Kafka 기반 상품 생성 이벤트 예제를 위한 멀티 모듈 Spring Boot 프로젝트입니다.
 
-## 프로젝트 구성
+- `products`: 상품 생성 API + Kafka Producer
+- `notifications-email`: 상품 생성 이벤트 Kafka Consumer
+- `common`: 공통 DTO, 이벤트 모델, 인터셉터
 
-- `products`: API, Kafka Producer, 예외 처리
-- `common`: 공통 응답(`BaseResponse`), 이벤트 모델, 로깅 인터셉터
+## 프로젝트 구조
 
 ```text
 product-service/
   common/
   products/
+  notifications-email/
 ```
 
 ## 기술 스택
@@ -21,58 +22,64 @@ product-service/
 - Spring Web MVC
 - Spring for Apache Kafka
 - Jakarta Validation
-- Gradle
-
-## 모듈 관계
-
-`products/settings.gradle`에서 `common` 모듈을 포함하도록 설정되어 있습니다.
-
-- `include 'common'`
-- `project(':common').projectDir = new File(settingsDir.parent, 'common')`
-
-실행과 테스트는 `products` 모듈에서 수행하면 됩니다.
+- Gradle (Multi-module)
 
 ## 사전 준비
 
 1. JDK 25 설치
-2. Kafka 클러스터 실행
-3. `products/src/main/resources/application.yaml` 확인
+2. Kafka 실행 (`localhost:9092,localhost:9094`)
 
-기본 Kafka 설정:
-
-- `bootstrap-servers: localhost:9092,localhost:9094`
-- key serializer: `StringSerializer`
-- value serializer: `JsonSerializer`
-
-애플리케이션 시작 시 아래 토픽을 생성합니다.
-
-- topic: `product-created-events-topic`
-- partitions: `3`
-- replicas: `3`
-- `min.insync.replicas=2`
-
-## 실행 방법
+## 빌드
 
 ```powershell
-cd products
-.\gradlew.bat bootRun
+.\gradlew.bat build
 ```
 
-기본 포트는 랜덤(`server.port: 0`)입니다. 고정 포트로 실행:
+모듈 단위 빌드:
 
 ```powershell
-cd products
-.\gradlew.bat bootRun --args="--server.port=8080"
+.\gradlew.bat :products:build
+.\gradlew.bat :notifications-email:build
+```
+
+## 실행
+
+루트 디렉터리(`product-service`)에서 실행합니다.
+
+```powershell
+.\gradlew.bat :products:bootRun
+.\gradlew.bat :notifications-email:bootRun
+```
+
+두 모듈 모두 기본 포트는 랜덤(`server.port: 0`)입니다.
+필요 시 포트를 고정해 실행할 수 있습니다.
+
+```powershell
+.\gradlew.bat :products:bootRun --args="--server.port=8080"
+.\gradlew.bat :notifications-email:bootRun --args="--server.port=8081"
 ```
 
 ## 테스트
 
 ```powershell
-cd products
 .\gradlew.bat test
 ```
 
-현재 테스트 코드는 `contextLoads` 수준의 기본 스모크 테스트만 포함합니다.
+모듈 단위 테스트:
+
+```powershell
+.\gradlew.bat :products:test
+.\gradlew.bat :notifications-email:test
+.\gradlew.bat :common:test
+```
+
+현재 테스트는 `contextLoads` 중심의 스모크 테스트 수준입니다.
+
+## 이벤트 흐름
+
+1. `POST /api/products` 요청 수신 (`products`)
+2. `ProductCreatedEvent`를 `product-created-events-topic`으로 발행 (`products`)
+3. 같은 토픽을 구독해 이벤트 로그 처리 (`notifications-email`)
 
 ## API 명세
 
