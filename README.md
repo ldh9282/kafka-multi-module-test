@@ -120,45 +120,28 @@ product-service/
     "timestamp": "20260306014010123456",
     "formattedTime": "2026-03-06 01:40:10.123456"
   },
-  "body": "success"
+  "body": {
+    "productId": "a2b3c4d5-1111-2222-3333-444455556666",
+    "title": "Keyboard",
+    "price": 129.99,
+    "quantity": 10
+  }
 }
 ```
 
-실패 응답도 동일한 `BaseResponse` 구조를 사용하며, `body`는 `null`입니다.
+오류 응답도 동일한 `BaseResponse` 구조를 사용하며, `body`는 `null`입니다.
 
-## 예외 처리
+## Kafka 설정 요약
 
-`products/exception/GlobalExceptionHandler`에서 아래 상태 코드를 공통 처리합니다.
+- Producer (`products`):
+  - bootstrap servers: `localhost:9092,localhost:9094`
+  - key serializer: `StringSerializer`
+  - value serializer: `JsonSerializer`
+- Consumer (`notifications-email`):
+  - bootstrap servers: `localhost:9092,localhost:9094`
+  - group id: `product-created-events`
+  - trusted package: `com.kafka01.common.event`
 
-- `400 Bad Request`
-- `404 Not Found`
-- `409 Conflict`
-- `500 Internal Server Error`
+## 참고
 
-검증 실패(`MethodArgumentNotValidException`) 시 첫 번째 필드 에러 메시지를 `header.errorMsg`에 담아 반환합니다.
-
-## 로깅/추적
-
-- `common/interceptor/LogInterceptor`
-- 요청 시작 시 `logId`(UUID) 생성 후 MDC 저장
-- 컨트롤러 시작/종료 로그 및 실행 시간(ms) 출력
-- `BaseResponse.Header.logId`에 동일한 MDC `logId` 포함
-- Kafka 이벤트(`ProductCreatedEvent`)에도 `logId` 포함
-
-로그 포맷은 `products/src/main/resources/logback-spring.xml`에 정의되어 있습니다.
-
-## Kafka 이벤트 스키마
-
-토픽 `product-created-events-topic`으로 발행되는 이벤트 모델:
-
-```json
-{
-  "logId": "uuid",
-  "productId": "uuid",
-  "title": "string",
-  "price": 129.99,
-  "quantity": 10
-}
-```
-
-`productId`는 서버에서 UUID로 생성됩니다.
+- Swagger UI 의존성(`springdoc-openapi-starter-webmvc-ui`)이 포함되어 있습니다.
