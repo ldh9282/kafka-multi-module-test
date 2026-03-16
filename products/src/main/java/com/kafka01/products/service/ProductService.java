@@ -3,6 +3,7 @@ package com.kafka01.products.service;
 import com.kafka01.common.event.ProductCreatedEvent;
 import com.kafka01.common.exception.BaseException;
 import com.kafka01.products.dto.CreateProductRequest;
+import com.kafka01.products.dto.ProductResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -25,7 +26,7 @@ public class ProductService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public String createProduct(CreateProductRequest request) {
+    public ProductResponse createProduct(CreateProductRequest request) {
         String productId = UUID.randomUUID().toString();
 
         ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(MDC.get("logId"), productId, request.title(), request.price(), request.quantity());
@@ -69,11 +70,12 @@ public class ProductService {
             log.info("offset: {}", result.getRecordMetadata().offset());
             log.info("Product created event sent successfully with offset: {}", result.getProducerRecord());
         } catch (Exception e) {
-            throw new BaseException(e);
+            throw new BaseException("프로듀서 에러", e);
         }
 
         log.info("success");
-        return "success";
+        ProductResponse productResponse = new ProductResponse(productId, request.title(), request.price(), request.quantity());
+        return productResponse;
     }
 
 }

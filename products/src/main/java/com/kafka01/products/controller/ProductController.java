@@ -1,6 +1,8 @@
 package com.kafka01.products.controller;
 
+import com.kafka01.common.dto.BaseResponse;
 import com.kafka01.products.dto.CreateProductRequest;
+import com.kafka01.products.dto.ProductResponse;
 import com.kafka01.products.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -9,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.kafka01.common.dto.BaseResponse;
 /**
  * 상품 컨트롤러
  */
@@ -30,7 +31,7 @@ public class ProductController {
      * @return
      */
     @PostMapping("/products")
-    public BaseResponse<String> createProduct(@Valid @RequestBody CreateProductRequest request) {
+    public BaseResponse<ProductResponse> createProduct(@Valid @RequestBody CreateProductRequest request) {
         return BaseResponse.body(HttpStatus.CREATED, productService.createProduct(request));
     }
 }
