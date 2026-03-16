@@ -10,11 +10,9 @@ public class BaseException extends RuntimeException {
         super(message);
     }
     public BaseException(String message, Throwable e) {
-        super(message);
-        initCause(e);
+        super(message, e);
     }
     public BaseException(Throwable e) {
-        super();
-        initCause(e);
+        super(e);
     }
 }

@@ -10,12 +10,10 @@ public class ConflictException extends RuntimeException {
         super(message);
     }
     public ConflictException(String message, Throwable e) {
-        super(message);
-        initCause(e);
+        super(message, e);
     }
     public ConflictException(Throwable e) {
-        super();
-        initCause(e);
+        super(e);
     }
 
 }
