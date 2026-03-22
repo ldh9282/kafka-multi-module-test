@@ -44,7 +44,7 @@ public class KafkaProducerConfig {
     @Value("${spring.kafka.producer.properties.max.in.flight.requests.per.connection}")
     private Integer inflightRequests;
 
-    public Map<String, Object> productConfigs() {
+    private Map<String, Object> producerConfigs() {
         Map<String, Object> configs = new HashMap<>();
 
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrapServer);
@@ -63,7 +63,7 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, ProductCreatedEvent> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(productConfigs());
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
